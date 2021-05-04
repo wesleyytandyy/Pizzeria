@@ -7,11 +7,13 @@
     {% for pizza in pizzas %}
 
     <li>
-        <a href="{% url 'pizzas:za' pizza.id %}"> {{ pizza }}</a>
+        <a href="{% url 'pizzas:pizza' pizza.id %}">`{{ pizza }} </a>
     </li>
     {% empty %}
-    <li>Its a boring Pizza</li>
+    <p>Nothing Available</p>
     {% endfor %}
 </ul>
+
+
 
 {% endblock content %}

@@ -1,0 +1,25 @@
+{% extends "pizzas/base.html" %}
+
+{% block content %}
+
+<b> Pizza: {{pizza}}</b>
+<p> Ingredients </p>
+<ul>
+    {% for topping in toppings %}
+
+    <li>
+        {{topping.name | linebreaks}}
+    </li>
+    {% empty %}
+    <li> There are no toppings for this pizza</li>
+    {% endfor %}
+</ul>
+
+{% if pizza.header_image %}
+<img src='{{ pizza.header_image.url }}' class="img-thumbnail" style='max-height: height 200px' alt="">
+<p>
+    {% endif %}
+    <a href="{% url 'pizzas:comments' pizza.id %}">Add a Comment</a>
+</p>
+
+{% endblock content %}

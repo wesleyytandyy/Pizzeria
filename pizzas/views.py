@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from .models import Pizza, Topping
+from django.shortcuts import render, redirect
+from .models import Pizza, Topping, Comment
+from .forms import CommentForm
 
 # Create your views here.
 
@@ -8,19 +9,35 @@ def index(request):
     """ The home page for Pizzeria """
     return render(request, 'pizzas/index.html')
 
-def zas(request):
-    pizza = Pizza.objects.order_by('name')
-    #entries = topic.entry_set.order_by('-date_added')
+def pizzas(request):
+    pizzas = Pizza.objects.order_by('name')
 
-    context = {'pizza': pizza}
+    context = {'pizzas': pizzas}
 
 
-    return render(request, 'pizzas/zas.html', context)
+    return render(request, 'pizzas/pizzas.html', context)
 
-def za(request, pizza_id):
+def pizza(request, pizza_id):
+    pizza = Pizza.objects.get(id=pizza_id)
+    topping = pizza.topping_set.order_by('name')
+    comment = pizza.comment_set.order_by('date_added')
+
+    context = {'pizza': pizza, 'topping': topping, 'comment': comment}
+
+    return render(request, 'pizzas/pizza.html', context)
+
+def comments(request, pizza_id):
     pizza = Pizza.objects.get(id=pizza_id)
 
-    topping = Topping.entry_set.order_by('name')
-    context = {'pizza': pizza, 'topping': topping}
+    if request.method != 'POST':
+        comment = CommentForm()
+    else:
+        comment = CommentForm(data=request.POST)
 
-    return render(request, 'pizzas/za.html', context)
+        if comment.is_valid():
+            comments = comment.save()
+
+            return redirect('pizzas:pizzas')
+    context = {'comment':comment, 'pizza': pizza}
+    return render(request, 'pizzas/comments.html', context)
+        
